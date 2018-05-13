@@ -18,6 +18,7 @@ jobs:
 
     steps:
       - checkout
+      - run: cp .env.local .env
       - run: make pdf
       # Download and cache dependencies
       # - restore_cache:
