@@ -9,12 +9,11 @@ all: pdf open
 
 .PHONY: pdf
 pdf:
-	@docker run --rm -v `pwd`:/data nilrecurring/latex-gfonts pdflatex -jobname martinknoller-cv martin-cv.tex
-	@echo cv was produced: open martinknoller-cv.pdf
+	@docker run --rm -v `pwd`:/data nilrecurring/latex-gfonts pdflatex -jobname cv cv.tex
 
 .PHONY: open
 open:
-	@xdg-open martinknoller-cv.pdf
+	@xdg-open cv.pdf
 
 .PHONY: clean
 clean:
