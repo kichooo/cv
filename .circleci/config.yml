@@ -18,21 +18,63 @@ jobs:
 
     steps:
       - checkout
-
+      - run: echo "dupa"
       # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+      # - restore_cache:
+      #     keys:
+      #     - v1-dependencies-{{ checksum "package.json" }}
+      #     # fallback to using the latest cache if no exact match is found
+      #     - v1-dependencies-
 
-      - run: yarn install
+      # - run: yarn install
 
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+      # - save_cache:
+      #     paths:
+      #       - node_modules
+      #     key: v1-dependencies-{{ checksum "package.json" }}
         
-      # run tests!
-      - run: yarn test
+      # # run tests!
+      # - run: yarn test
 
+  deploy_dev:
+    machine: true
+    steps:
+      - checkout
+      - run: cp .env.dev .env
+      - run: make create_account_file
+      - run: make prepare_volume
+      - run: make client_install
+      - run: make client_build
+      - run: make gcloud_login
+      - run: make init
+      - run: make plan
+      - run: make apply
+      - run: make client_upload
+
+  deploy_prod:
+    machine: true
+    steps:
+      - checkout
+      - run: cp .env.prod .env
+      - run: make create_account_file
+      - run: make prepare_volume
+      - run: make client_install
+      - run: make client_build
+      - run: make gcloud_login
+      - run: make init
+      - run: make plan
+      - run: make apply
+      - run: make client_upload
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy_dev:
+          requires:
+            - build
+      - deploy_prod:
+          requires:
+            - deploy_dev
+only: sequential-branch-filter

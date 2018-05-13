@@ -6,3 +6,5 @@
 martin-cv.fdb_latexmk
 martin-cv.fls
 martin-cv.synctex.gz
+account.json*
+.env
