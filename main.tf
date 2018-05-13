@@ -14,7 +14,7 @@ provider "google" {
 
 terraform {
   backend "gcs" {
-    project     = "zugersee-195520"
+    project     = "krzysztof-burlinski-cv"
     bucket  = "tf-state-0"
     credentials = "account.json"
     region      = "europe-west3"
