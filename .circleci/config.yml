@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - checkout
-      - run: echo "dupa"
+      - run: make pdf
       # Download and cache dependencies
       # - restore_cache:
       #     keys:
