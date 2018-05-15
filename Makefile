@@ -5,7 +5,7 @@ include .env
 # dependencies: moderncv, pdflatex, texlive-fonts-extra
 # -----------------------------------------------------------------------------
 .PHONY: all
-all: prepare_volume pdf open destroy_volume
+all: prepare_volume_local pdf open destroy_volume
 
 .PHONY: pdf
 pdf:
@@ -45,9 +45,13 @@ create_account_file:
 	@echo ${GOOGLE_CREDENTIALS_FILE} | base64 --decode  > account.json
 
 .PHONY: prepare_volume
-prepare_volume:
+prepare_volume: destroy_volume
 	@docker create -v /data --name data alpine:3.4 /bin/true
 	@docker cp . data:/data
+
+.PHONY: prepare_volume_local
+prepare_volume_local: destroy_volume
+	@docker create -v `pwd`:/data --name data alpine:3.4 /bin/true
 
 .PHONY: destroy_volume
 destroy_volume:
