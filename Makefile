@@ -71,7 +71,7 @@ client_test:
 
 .PHONY: client_upload
 client_upload:
-	docker run -w /data --volumes-from data --volumes-from gcloud-config -it google/cloud-sdk:193.0.0-alpine gsutil -h Cache-Control:private cp -R client/build/* gs://${TF_VAR_DOMAIN}
+	docker run -w /data --volumes-from data --volumes-from gcloud-config -it google/cloud-sdk:193.0.0-alpine gsutil -m -h Cache-Control:private cp -R client/build/* gs://${TF_VAR_DOMAIN}
 	docker run -w /data --volumes-from data --volumes-from gcloud-config -it google/cloud-sdk:193.0.0-alpine gsutil -h Cache-Control:private cp -R cv.pdf gs://${TF_VAR_DOMAIN}
 
 .PHONY: gcloud_login
