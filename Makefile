@@ -5,19 +5,15 @@ include .env
 # dependencies: moderncv, pdflatex, texlive-fonts-extra
 # -----------------------------------------------------------------------------
 .PHONY: all
-all: pdf open
+all: prepare_volume pdf open destroy_volume
 
 .PHONY: pdf
 pdf:
-	@docker run --rm -v `pwd`:/data nilrecurring/latex-gfonts pdflatex -jobname cv cv.tex
+	@docker run -w /data --volumes-from data nilrecurring/latex-gfonts pdflatex -jobname cv cv.tex
 
 .PHONY: open
 open:
 	@xdg-open cv.pdf
-
-.PHONY: clean
-clean:
-	@rm -f *.out *.log *.pdf *.aux
 
 .PHONY: local_plan
 local_plan: create_account_file prepare_volume client_install client_test client_build gcloud_login init plan destroy_volume gcloud_destroy
