@@ -8,7 +8,7 @@ jobs:
     machine: true
     steps:
       - checkout
-      - run: cp .env.dev .env
+      - run: touch .env
       - run: make create_account_file
       - run: make prepare_volume
       - run: make pdf
@@ -19,12 +19,15 @@ jobs:
       - run: make plan
       - run: make apply
       - run: make client_upload
+    environment:
+      TF_VAR_ENV: "dev"
+      TF_VAR_DOMAIN: "dev.burlinski.info"
 
   deploy_prod:
     machine: true
     steps:
       - checkout
-      - run: cp .env.prod .env
+      - run: touch .env
       - run: make create_account_file
       - run: make prepare_volume
       - run: make pdf
@@ -35,6 +38,9 @@ jobs:
       - run: make plan
       - run: make apply
       - run: make client_upload
+    environment:
+      TF_VAR_ENV: "prod"
+      TF_VAR_DOMAIN: "burlinski.info"
 
 workflows:
   version: 2
