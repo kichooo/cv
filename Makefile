@@ -1,11 +1,13 @@
-include .env
-
 # -----------------------------------------------------------------------------
 # BUILD
 # dependencies: moderncv, pdflatex, texlive-fonts-extra
 # -----------------------------------------------------------------------------
 .PHONY: all
 all: prepare_volume_local pdf open destroy_volume
+
+.PHONY: bootstrap
+bootstrap:
+	cp .env.local .env
 
 .PHONY: pdf
 pdf:
@@ -38,7 +40,7 @@ destroy:
 
 .PHONY: init
 init:
-	@docker run -w /data --volumes-from data -it hashicorp/terraform:0.11.3 init -backend-config="prefix=${TF_VAR_ENV}"
+	@docker run -w /data --volumes-from data --env-file .env -it --entrypoint "" hashicorp/terraform:0.11.3 sh -c 'terraform init -backend-config="prefix=$${TF_VAR_ENV}"'
 
 .PHONY: create_account_file
 create_account_file:
@@ -71,8 +73,8 @@ client_test:
 
 .PHONY: client_upload
 client_upload:
-	docker run -w /data --volumes-from data --volumes-from gcloud-config -it google/cloud-sdk:193.0.0-alpine gsutil -m -h Cache-Control:private cp -R client/build/* gs://${TF_VAR_DOMAIN}
-	docker run -w /data --volumes-from data --volumes-from gcloud-config -it google/cloud-sdk:193.0.0-alpine gsutil -h Cache-Control:private cp -R cv.pdf gs://${TF_VAR_DOMAIN}
+	docker run -w /data --volumes-from data --volumes-from gcloud-config --env-file .env -it --entrypoint "" google/cloud-sdk:193.0.0-alpine sh -c 'gsutil -m -h Cache-Control:private cp -R client/build/* gs://$${TF_VAR_DOMAIN}'
+	docker run -w /data --volumes-from data --volumes-from gcloud-config --env-file .env -it --entrypoint "" google/cloud-sdk:193.0.0-alpine sh -c 'gsutil -h Cache-Control:private cp -R cv.pdf gs://$${TF_VAR_DOMAIN}'
 
 .PHONY: gcloud_login
 gcloud_login:
